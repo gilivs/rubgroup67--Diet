@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>new patient</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/Content/patientStyle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+    <script>
+
+         $(document).ready(function () {
+            ajaxCall("GET", "../api/sensetivities", "", successGetSensitivities, errorGetSensitivities);
+
+            $('#pForm').submit(f1);
+        });
+
+        // this function is activated in case of a success
+        function successGetSensitivities(sensitivitiesdata) {
+            //for (var i = 0; i < sensitivitiesdata.length; i++) {
+            //    $("#sensitivities").append($("<option></option>").val(sensitivitiesdata[i].NumSensitivity).html(sensitivitiesdata[i].NameSensitivity));
+            //}
+
+            var SensitivitiesDDL = document.getElementById('sensitivities');
+            var str = "";
+            for (var i = 0; i < sensitivitiesdata.length; i++) {
+                str += "<option value='" + sensitivitiesdata[i].NumSensitivity + "' >" + sensitivitiesdata[i].NameSensitivity+ "</option>";
+            }
+            SensitivitiesDDL.innerHTML = str;
+        }
+
+        // this function is activated in case of a failure
+        function errorGetSensitivities(err) {
+            swal("Error in getting sensitivities");
+        }
+
+
+
+        function f1() {
+
+            addPatient();
+            return false;
+        }
+
+        function addPatient() {
+            var firstName = $('#firstName').val();
+            var lastName = $('#lastName').val();
+            var id = $('#idNumber').val();
+            var dateOfBirth = $('#dateOfBirth').val().toString();
+            var age = getAge(dateOfBirth);
+            var contactName = $('#contactName').val();
+            var contactRelation = $('#contactRelation').val();
+            var phoneContact = $('#phoneContact').val();
+            var height = $('#height').val();
+            var weight = $('#weight').val();
+            var diseases = $('#diseases').val();
+            //var texture = $('#texture').val();
+            //var sensetivity = $('#sensetivity').val();
+            var clasification = $('#clasification').val();
+            var comments = $('#comments').val();
+
+            var selected = [];
+            $('#sensitivities :selected').each(function () {
+                selected.push($(this).val());
+            });
+
+            var textureSel = "";
+            var texture1 = document.getElementById("1").checked;
+            var texture2 = document.getElementById("2").checked;
+            var texture3 = document.getElementById("3").checked;
+
+            if (!texture1 && !texture2 && !texture3) {
+                alert("choose texture");
+                return false;
+            }
+            if (texture1  == true) {
+                textureSel = 1;
+            } else
+                if (texture2 == true) {
+                    textureSel = 2;
+
+                }
+                else {
+                    textureSel = 3;
+                }
+
+
+            //Patient = {
+
+            //    Id: id,
+            //    FirstName: firstName,
+            //    LastName: lastName,
+            //    DateOfBirth: dateOfBirth,
+            //    Age: age,
+            //    ContactName: contactName,
+            //    ContactPhone: phoneContact,
+            //    ContactRelation: contactRelation,
+            //    Height: height,
+            //    Weight: weight,
+            //    Diseases: diseases,
+            //    IdTexture: textureSel,
+            ////    Sensitivities: selected,
+            //Sensitivities: $("#sensitivities").val(),
+
+            //    Classification: clasification,
+            //    Image: "",
+            //    Comments: comments,
+            //}
+
+
+             Patient = {
+
+                 Id: "204123123 ",
+                 FirstName: "חיים",
+                 LastName: "כהן",
+                 DateOfBirth: dateOfBirth,
+                 Age: age,
+                 ContactName: "אילנה",
+                 ContactPhone: "0541231234",
+                 ContactRelation: "אחות",
+                 Height: 67,
+                 Weight: 88,
+                 Diseases:"סוכרת",
+                 IdTexture: textureSel,
+                 //Sensitivities: $("#sensitivities").val(),
+                 Sensitivities: selected,
+                 Classification: "עצמאי",
+                 Image: "",
+                 Comments: "נוסףףף",
+            }
+            
+            ajaxCall("POST", "../api/patients", JSON.stringify(Patient), successPost, errorPost);
+        }
+
+        function successPost() {
+            alert('success adding patient');
+        }
+
+        function errorPost() {
+            alert('error adding patient');
+        }
+
+
+        function getAge(dateString) {
+            var today = new Date();
+            var birthDate = new Date(dateString);
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-inverse navFont shadow-sm p-3 mb-5 bg-#fefefe rounded" style="height:40px;" dir="rtl">
+        <a class="navbar-brand" href="#"><strong>Diet +</strong></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">ראשי <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        מטופלים
+                    </a>
+                    <div class="dropdown-menu navFont" aria-labelledby="navbarDropdownMenuLink" dir="rtl">
+                        <a class="dropdown-item" href="#">מטופל חדש</a>
+                        <a class="dropdown-item" href="#">רשימת מטופלים </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">הערות מטפלים</a>
+                </li>
+                <li class="nav-item">
+                    <a class="navbar-brand" href="#">
+                        <img src="/images/nutrition.png" width="30" height="30" alt="" class="d-inline-block align-top imgNav" dir="ltr">
+                        <h6>שלום, <strong>הילה</strong></h6>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="card text-right card-header-tabs navFont  " dir="rtl">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs ">
+                <li class="nav-item">
+                    <a class="nav-link active " href="#">פרופיל מטופל</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">בדיקות מעבדה</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">תפריט תזונה</a>
+                </li>
+            </ul>
+            <form id="pForm" class="contentcontainer med left" style="margin-left:500px; margin-top: 100px;">
+                <div class="form-row text-darkshadow-sm p-3 mb-5  rounded sh" style="width: 18rem;background:Gainsboro ;   margin:0 auto;float:none; margin-bottom:10px; width:1000px">
+                    <!--<div class="form-row">
+                    <div class="form-row col-ms-4">-->
+                    <div id="containerD">
+                        <p>
+                            <label>:שם פרטי</label>
+                            <input type="text" id="firstName">
+                        </p>
+                        <p>
+                            <label>:שם משפחה</label>
+                            <input type="text" id="lastName">
+                        </p>
+                        <p>
+                            <label>:תעודת זהות</label>
+                            <input type="text" id="idNumber">
+                        </p>
+                        <p>
+                            <label>תאריך לידה</label>
+                            <input type="date" id="dateOfBirth" required>
+                        </p>
+                        <p>
+                            <label>:איש קשר</label>
+                            <input type="text" id="contactName">
+                        </p>
+                        <p>
+                            <label>:קרבה</label>
+                            <input type="text" id="contactRelation">
+                        </p>
+                        <p>
+                            <label>:טלפון איש קשר</label>
+                            <input type="tel" id="phoneContact">
+                        </p>
+                        <p>
+                            <label>:גובה</label>
+                            <input type="text" id="height">
+                        </p>
+                        <p>
+                            <label>:משקל</label>
+                            <input type="text" id="weight">
+                        </p>
+                        <p>
+                            <label>:מחלות</label>
+                            <input type="text" id="diseases">
+                        </p>
+                        <p>
+                            <!--<label>מרקם מזון</label>
+        <select id="texture">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>-->
+                            <label>מרקם מזון</label>
+                            <label>
+                                <input type="radio" id="1" name="texture" value="regular">
+                                רגיל
+                            </label><br />
+                            <label>
+                                <input type="radio" id="2" name="texture" value="soft">
+                                רך
+                            </label><br />
+                            <label>
+                                <input type="radio" id="3" name="texture" value="blender">
+                                בלנדר
+                            </label><br />
+
+                        </p>
+                        <!--<p>
+        <label>:רגישויות</label>
+        <input type="text" id="sensetivity">
+    </p>-->
+                        <p>
+                            <div class="form-group">
+                                <label for="sensitivities">רגישויות</label>
+                                <select id="sensitivities" multiple required></select>
+                            </div>
+                        </p>
+
+                        <!--<label>רגישויות</label>
+    <input type="checkbox" class="sensetivity" id="1" name="sensetivity" value="sugar"> ללא סוכר<br>
+    <input type="checkbox" class="sensetivity" id="2" name="sensetivity" value="gluten"> ללא גלוטן<br />
+    <input type="checkbox" class="sensetivity" id="3" name="sensetivity" value="lactose"> ללא לקטוז<br />
+    <input type="checkbox" class="sensetivity" id="4" name="sensetivity" value="vegetarian"> צמחוני<br />-->
+                        <p>
+                            <label>סיווג מטופל</label>
+                            <select id="clasification">
+                                <option>עצמאי</option>
+                                <option>סיעודי</option>
+                                <option>תשוש</option>
+                            </select>
+                        </p>
+                        <p>
+                            <label>:הערות נוספות</label>
+                            <input type="text" id="comments">
+                        </p>
+                        <div class="form-group">
+                            <!--<button class="btn btn-default" id="add" onclick="f1(); return false;">Add</button>-->
+                            <input type="submit" value="שמירה" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <!--<div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+        </div>-->
+    </div>
+
+</body>
+</html>

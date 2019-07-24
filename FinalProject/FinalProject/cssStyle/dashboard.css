@@ -1,0 +1,77 @@
+﻿.cardStyle:hover {
+    background-color: rgba(255, 255, 255, 0.5); 
+    filter: brightness(85%)
+}
+#gauge_divbmi{
+    left: 0px;
+}
+#gauge_div{
+    float:left;
+}
+.gaugeDiv {
+    display: flex;
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    margin-top: 40px;
+    float: left;
+}
+
+#barChartFood {
+    height: 200px;
+}
+
+.deleteCatNew {
+    float: right;
+    margin-left: 10px;
+}
+
+/*div.prod-cell {
+            height: 100px !important;
+            width: 100px;
+            overflow-y: auto;
+        }*/
+#tr1, #tr2, #tr3, #tr5 {
+    height: 100px !important;
+    width: 100px;
+    overflow-y: auto;
+}
+
+div.prod-cell span {
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: black;
+}
+
+#weekTbl {
+    text-align: right;
+    /border: 1px solid #808080;
+    /
+}
+
+    #weekTbl tbody > tr > th {
+        width: 100px;
+        font-weight: bold;
+        /border: 1px solid #808080;
+        /
+    }
+
+    #weekTbl tbody > tr > td {
+        max-width: 150px;
+        /border: 1px solid #808080;
+        /
+    }
+
+#tr4 {
+    height: 70px !important;
+}
+
+th {
+    text-align: center;
+}
+.cardMid{
+    height:250px;
+}
